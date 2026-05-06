@@ -158,7 +158,7 @@ src/
 
 ## 🌐 Live Demo
 
-👉 (Add your Vercel link here)
+👉 (https://class-assign.vercel.app/)
 
 ---
 
