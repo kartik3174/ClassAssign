@@ -1,203 +1,174 @@
-# 📚 ClassAssign
+# 🎓 AI&DS Staff Assign
 
-### AI-Based Smart Faculty Substitution System
+### Intelligent Faculty Resource Management System
 
----
-
-## 🚀 Overview
-
-**ClassAssign** is an intelligent system designed to automate faculty attendance tracking and substitute teacher assignment in educational institutions.
-
-When a teacher is **absent or on duty (OD)**, the system automatically finds the best available replacement using timetable data, workload balancing, and smart decision-making logic.
+AI&DS Staff Assign is a **smart, role-based faculty management system** designed to automate leave handling and substitution assignment in academic institutions.
 
 ---
 
-## 🎯 Problem Statement
+## 🧠 Key Features
 
-In most colleges, assigning substitute teachers is a manual and time-consuming process. It can lead to:
+### 👨‍🏫 Faculty
 
-* Scheduling conflicts
-* Uneven workload distribution
-* Delays in decision-making
-
-**ClassAssign solves this problem by automating the entire process efficiently.**
-
----
-
-## 💡 Key Features
-
-### ✅ Attendance Management
-
-* Mark faculty as Present / Absent / On Duty
-* Maintain attendance history
-
-### 🤖 Smart Substitution Engine
-
-* Detect free teachers using timetable
-* Prioritize:
-
-  * Same subject expertise
-  * Same department
-  * Low workload
-* Uses scoring-based decision logic
-
-### 🔁 Dynamic Reassignment
-
-* If a teacher rejects:
-
-  * Automatically assigns next best candidate
-* Allows teacher suggestions
-
-### 🔔 Notification System
-
-* Sends assignment requests to faculty
-* Options:
-
-  * Accept
-  * Reject
-  * Suggest alternative
-
-### ⚖️ Workload Optimization
-
-* Prevents overloading
-* Ensures fair distribution
-
-### 📊 Dashboard
-
-* Admin view:
-
-  * Substitutions
-  * Attendance logs
-  * Workload insights
-* Faculty view:
-
-  * Assigned classes
-  * Personal timetable
-
-### 📈 Reports & Analytics
-
-* Substitution history
-* Acceptance rates
-* Attendance trends
+* Apply Leave / On Duty (OD)
+* Select date and periods
+* View request status (Pending / Approved / Rejected)
+* View assigned substitutions
+* Accept / Reject substitution requests
 
 ---
 
-## 🧠 How It Works
+### 👨‍💼 HOD (Head of Department)
 
-1. Teacher marked as **Absent / OD**
-2. System retrieves timetable
-3. Identifies free teachers
-4. Applies smart filters
-5. Calculates score for each teacher
-6. Assigns best candidate
-7. Sends notification
-8. Confirms or reassigns
+* View all faculty leave requests
+* Approve / Reject requests
+* Trigger automatic substitution system
+* Override manual assignments
+* Monitor department activity
 
 ---
 
-## 🧮 Scoring Algorithm
+### 👨‍💻 Admin
 
-```
-Score =
-+50 → Same subject  
-+30 → Same department  
--20 → High workload  
--10 → Continuous classes  
-+10 → High acceptance rate  
--15 → Recently assigned  
+* Manage users and roles
+* Upload and manage timetable
+* Configure system rules (workload limits, priorities)
+* View system analytics
+* Access logs and reports
+
+---
+
+### 🎓 Student
+
+* View timetable (read-only)
+* View real-time substitution updates
+
+---
+
+## 🔄 System Workflow
+
+```text
+Faculty applies leave
+        ↓
+HOD approves/rejects
+        ↓
+System assigns substitute teachers
+        ↓
+Assigned faculty accepts/rejects
+        ↓
+Dashboard updates in real-time
+        ↓
+Students view updated timetable
 ```
 
 ---
 
-## 🏗️ System Architecture
+## 🧠 Smart Substitution Engine
 
-### Modules:
+The system automatically assigns substitute teachers based on:
 
-* Attendance Module
-* Substitution Engine
-* Notification System
-* Database
-* Dashboard UI
+* ✔ Subject matching
+* ✔ Free timetable slots
+* ✔ Workload balancing
 
----
+### 📊 Selection Logic
 
-## 🗄️ Database Design
-
-### Tables:
-
-* Faculty
-* Timetable
-* Attendance
-* Substitution
-* Notifications
-
----
-
-## 🛠️ Tech Stack
-
-| Layer         | Technology                    |
-| ------------- | ----------------------------- |
-| Backend       | Python (Flask / Django)       |
-| Frontend      | HTML, CSS, JavaScript / React |
-| Database      | MySQL / Firebase              |
-| Notifications | Firebase / Twilio             |
-
----
-
-## ⚙️ Installation & Setup
-
-```bash
-# Clone repository
-git clone https://github.com/your-username/classassign.git
-
-# Navigate to project
-cd classassign
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run server
-python app.py
+```ts
+score =
+  + subjectMatch
+  + availability
+  - workload
 ```
 
 ---
 
-## ▶️ Usage
+## ⚡ Real-Time Updates
 
-1. Admin logs in
-2. Marks faculty attendance
-3. System automatically assigns substitute
-4. Faculty receives notification
-5. Faculty accepts or rejects
+* Live updates using Firebase Firestore
+* No manual refresh required
+* Instant UI synchronization
 
 ---
 
-## 🔮 Future Enhancements
+## 🔐 Authentication & Roles
 
-* AI-based absence prediction
-* Mobile application
-* Biometric attendance integration
-* Advanced analytics dashboard
+* Firebase Authentication (Google / Email)
+* Role-based access control:
 
----
-
-## 🎓 Project Type
-
-Final Year Engineering Project
+  * Faculty
+  * HOD
+  * Admin
+  * Student
 
 ---
 
-## 📌 Conclusion
+## 🗂️ Tech Stack
 
-**ClassAssign** simplifies and automates faculty substitution using intelligent decision-making, reducing manual effort and improving scheduling efficiency.
+* **Frontend:** React (Vite + TypeScript)
+* **Backend:** Firebase (Firestore + Auth)
+* **Styling:** Tailwind CSS
+* **Deployment:** Vercel
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+  components/
+  pages/
+  services/
+  hooks/
+  context/
+  firebase/
+  utils/
+```
+
+---
+
+## 📊 Firestore Collections
+
+* users
+* leave_requests
+* timetable
+* subjects
+* workload
+* substitution
+* substitution_logs
+
+---
+
+## 🎨 UI Highlights
+
+* Modern gradient dashboard
+* Role-based navigation
+* Responsive design
+* Clean and intuitive layout
+
+---
+
+## 🚀 Future Enhancements
+
+* 📧 Email / Notification system
+* 📊 Advanced analytics dashboard
+* 🤖 AI-based teacher recommendation
+* 📱 Mobile optimization
+
+---
+
+## 🌐 Live Demo
+
+👉 (Add your Vercel link here)
 
 ---
 
 ## 👨‍💻 Author
 
-KARTIK SINGH
+**Kartik Singh**
+AI&DS Department
+
 ---
 
-## 📄 License
+## 📌 Note
 
-This project is for academic purposes.
+This project is developed as part of an academic system to demonstrate **real-time resource management using modern web technologies**.
