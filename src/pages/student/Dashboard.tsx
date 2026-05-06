@@ -152,16 +152,16 @@ export default function StudentDashboard({ activeTab }: { activeTab?: string }) 
           <p className="text-zinc-500 font-bold mt-2 uppercase tracking-tight">III Year AI&DS | Live Updates & Substitutions</p>
         </motion.div>
 
-        <div className="flex bg-zinc-100 p-1.5 rounded-2xl w-fit">
+        <div className="flex bg-zinc-100 p-1.5 rounded-2xl w-full md:w-fit overflow-x-auto">
           <button 
             onClick={() => setSubTab('timetable')}
-            className={`px-6 py-2.5 rounded-xl text-sm font-black transition-all ${subTab === 'timetable' ? 'bg-zinc-900 text-white shadow-xl scale-105' : 'text-zinc-500 hover:text-zinc-900'}`}
+            className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs md:text-sm font-black transition-all whitespace-nowrap ${subTab === 'timetable' ? 'bg-zinc-900 text-white shadow-xl scale-105' : 'text-zinc-500 hover:text-zinc-900'}`}
           >
             Class Timetable
           </button>
           <button 
             onClick={() => setSubTab('substitutions')}
-            className={`px-6 py-2.5 rounded-xl text-sm font-black transition-all ${subTab === 'substitutions' ? 'bg-zinc-900 text-white shadow-xl scale-105' : 'text-zinc-500 hover:text-zinc-900'}`}
+            className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs md:text-sm font-black transition-all whitespace-nowrap ${subTab === 'substitutions' ? 'bg-zinc-900 text-white shadow-xl scale-105' : 'text-zinc-500 hover:text-zinc-900'}`}
           >
             Substitution Details
           </button>
@@ -246,16 +246,17 @@ export default function StudentDashboard({ activeTab }: { activeTab?: string }) 
             exit={{ opacity: 0, y: -20 }}
           >
             <div className="bg-white border-2 border-zinc-900 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
-              <table className="w-full text-left text-sm border-collapse">
-                <thead>
-                  <tr className="bg-zinc-900 text-white">
-                    <th className="px-6 py-4 font-black uppercase tracking-widest text-[10px]">Date & Day</th>
-                    <th className="px-6 py-4 font-black uppercase tracking-widest text-[10px]">Period</th>
-                    <th className="px-6 py-4 font-black uppercase tracking-widest text-[10px]">Subject</th>
-                    <th className="px-6 py-4 font-black uppercase tracking-widest text-[10px]">Absent / OD Staff</th>
-                    <th className="px-6 py-4 font-black uppercase tracking-widest text-[10px]">Assigned Staff</th>
-                  </tr>
-                </thead>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm border-collapse min-w-[800px]">
+                  <thead>
+                    <tr className="bg-zinc-900 text-white">
+                      <th className="px-6 py-4 font-black uppercase tracking-widest text-[10px]">Date & Day</th>
+                      <th className="px-6 py-4 font-black uppercase tracking-widest text-[10px]">Period</th>
+                      <th className="px-6 py-4 font-black uppercase tracking-widest text-[10px]">Subject</th>
+                      <th className="px-6 py-4 font-black uppercase tracking-widest text-[10px]">Absent / OD Staff</th>
+                      <th className="px-6 py-4 font-black uppercase tracking-widest text-[10px]">Assigned Staff</th>
+                    </tr>
+                  </thead>
                 <tbody className="divide-y-2 divide-zinc-900">
                   {substitutions.length > 0 ? (
                     substitutions.map((sub) => (
@@ -296,6 +297,7 @@ export default function StudentDashboard({ activeTab }: { activeTab?: string }) 
                   )}
                 </tbody>
               </table>
+             </div>
             </div>
           </motion.div>
         )}

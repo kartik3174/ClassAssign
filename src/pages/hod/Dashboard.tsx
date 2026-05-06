@@ -222,7 +222,7 @@ export default function HODDashboard({ activeTab, user }: { activeTab?: string, 
   if (activeTab === 'dashboard' || !activeTab) {
     return (
       <div className="space-y-8 animate-in fade-in duration-500">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {[
             { label: 'Pending Leaves', value: requests.filter(r => r.status === 'Pending').length, color: 'text-amber-500', icon: Clock },
             { label: 'Total Faculty', value: faculty.length, color: 'text-indigo-600', icon: Users },
@@ -331,14 +331,14 @@ export default function HODDashboard({ activeTab, user }: { activeTab?: string, 
     const pending = requests.filter(r => r.status === 'Pending');
     return (
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
           <div>
             <h1 className="text-3xl font-black text-zinc-900 tracking-tighter uppercase italic">
               Leave <span className="text-indigo-600">Approvals</span>
             </h1>
             <p className="text-zinc-500 font-medium mt-1">Review and manage faculty absence requests.</p>
           </div>
-          <Badge className="bg-indigo-600 text-white h-8 px-4 rounded-full font-black text-[10px] tracking-widest uppercase">{pending.length} Pending</Badge>
+          <Badge className="bg-indigo-600 text-white h-8 px-4 rounded-full font-black text-[10px] tracking-widest uppercase w-fit">{pending.length} Pending</Badge>
         </div>
 
         <Card className="border-none shadow-2xl bg-white overflow-hidden rounded-3xl">
@@ -352,7 +352,7 @@ export default function HODDashboard({ activeTab, user }: { activeTab?: string, 
                </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
+                <table className="w-full text-left text-sm min-w-[800px]">
                   <thead className="bg-zinc-900 text-white text-[10px] font-black uppercase tracking-widest">
                     <tr>
                       <th className="px-8 py-5">Faculty Member</th>
@@ -548,28 +548,28 @@ export default function HODDashboard({ activeTab, user }: { activeTab?: string, 
            {/* Staff Detail Modal */}
            <Dialog open={!!selectedStaff} onOpenChange={() => setSelectedStaff(null)}>
               <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto p-0 border-none bg-zinc-50 rounded-[2.5rem]">
-                 {selectedStaff && (
+                  {selectedStaff && (
                     <div className="space-y-0">
                        {/* Header Card */}
-                       <div className="bg-zinc-900 text-white p-12 rounded-b-[3rem] shadow-2xl relative overflow-hidden">
-                          <div className="absolute top-0 right-0 p-12 opacity-10">
-                             <Users className="h-32 w-32" />
+                       <div className="bg-zinc-900 text-white p-6 md:p-12 rounded-b-[3rem] shadow-2xl relative overflow-hidden">
+                          <div className="absolute top-0 right-0 p-6 md:p-12 opacity-10">
+                             <Users className="h-24 w-24 md:h-32 md:h-32" />
                           </div>
-                          <div className="flex items-end gap-8 relative z-10">
-                             <div className="h-24 w-24 rounded-3xl bg-indigo-600 flex items-center justify-center text-4xl font-black shadow-2xl shadow-indigo-500/20">
+                          <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-8 relative z-10">
+                             <div className="h-20 w-20 md:h-24 md:w-24 rounded-3xl bg-indigo-600 flex items-center justify-center text-3xl md:text-4xl font-black shadow-2xl shadow-indigo-500/20">
                                 {selectedStaff.name.charAt(0)}
                              </div>
                              <div>
-                                <Badge className="mb-4 bg-emerald-500 text-[10px] font-black uppercase tracking-widest border-none">Active Faculty</Badge>
-                                <h2 className="text-4xl font-black uppercase tracking-tighter italic">{selectedStaff.name}</h2>
-                                <p className="text-indigo-400 font-bold uppercase tracking-widest text-sm mt-1">{selectedStaff.designation} | {selectedStaff.department || 'AI&DS'}</p>
+                                <Badge className="mb-3 md:mb-4 bg-emerald-500 text-[10px] font-black uppercase tracking-widest border-none">Active Faculty</Badge>
+                                <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tighter italic leading-tight">{selectedStaff.name}</h2>
+                                <p className="text-indigo-400 font-bold uppercase tracking-widest text-[10px] md:text-sm mt-1">{selectedStaff.designation} | {selectedStaff.department || 'AI&DS'}</p>
                              </div>
                           </div>
                        </div>
 
-                       <div className="p-12 space-y-12">
+                       <div className="p-6 md:p-12 space-y-8 md:space-y-12">
                           {/* Profile Metrics */}
-                          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                              {[
                                 { label: 'Workload', value: `${selectedStaff.workload || 0} Hours`, icon: Zap, color: 'text-indigo-600' },
                                 { label: 'Reliability', value: `${Math.round((selectedStaff.acceptanceRate || 0) * 100)}%`, icon: BarChart3, color: 'text-emerald-600' },

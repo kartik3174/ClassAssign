@@ -33,7 +33,16 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [timeLeft, setTimeLeft] = useState(SESSION_TIMEOUT);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) setSidebarOpen(false);
+      else setSidebarOpen(true);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async (u) => {
@@ -111,9 +120,17 @@ export default function App() {
     <div className="min-h-screen bg-[#F8F9FC] text-zinc-900 flex">
       <Toaster position="top-right" richColors />
       
+      {/* Sidebar Overlay for Mobile */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-zinc-900/50 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+      
       {/* Sidebar */}
       <div 
-        className={`fixed inset-y-0 left-0 z-50 bg-white border-r border-zinc-100 transition-all duration-500 ease-in-out shadow-2xl ${sidebarOpen ? 'w-72' : 'w-0 opacity-0 overflow-hidden'}`}
+        className={`fixed inset-y-0 left-0 z-50 bg-white border-r border-zinc-100 transition-all duration-500 ease-in-out shadow-2xl ${sidebarOpen ? 'w-72 translate-x-0' : 'w-72 -translate-x-full'}`}
       >
         <div className="h-20 flex items-center px-8 border-b border-zinc-50">
            <img src={logo} className="h-10 w-auto" alt="Logo" />
@@ -155,8 +172,8 @@ export default function App() {
       </div>
 
       {/* Main Content */}
-      <main className={`flex-1 transition-all duration-500 ${sidebarOpen ? 'ml-72' : 'ml-0'}`}>
-        <header className="h-20 bg-white/80 backdrop-blur-xl border-b border-zinc-100 sticky top-0 z-40 px-8 flex items-center justify-between">
+      <main className={`flex-1 transition-all duration-500 min-w-0 ${sidebarOpen ? 'lg:ml-72' : 'ml-0'}`}>
+        <header className="h-20 bg-white/80 backdrop-blur-xl border-b border-zinc-100 sticky top-0 z-40 px-4 md:px-8 flex items-center justify-between">
            <div className="flex items-center gap-4">
               <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(!sidebarOpen)} className="rounded-xl">
                  {sidebarOpen ? <X /> : <Menu />}
@@ -178,7 +195,7 @@ export default function App() {
            </div>
         </header>
 
-        <div className="p-8 max-w-7xl mx-auto">
+        <div className="p-4 md:p-8 max-w-7xl mx-auto">
            {role === 'faculty' && <FacultyDashboard activeTab={activeTab} />}
            {role === 'hod' && <HODDashboard activeTab={activeTab} user={user} />}
            {role === 'admin' && <AdminPanel activeTab={activeTab} />}

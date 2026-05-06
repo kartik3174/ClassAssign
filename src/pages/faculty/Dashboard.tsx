@@ -191,15 +191,15 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
 
      return (
       <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
-        <div className="flex justify-between items-center bg-white p-8 rounded-[2rem] shadow-xl shadow-zinc-100 border border-zinc-50">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 md:p-8 rounded-[2rem] shadow-xl shadow-zinc-100 border border-zinc-50">
           <div>
-            <h1 className="text-4xl font-black text-zinc-900 tracking-tighter uppercase italic">
+            <h1 className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tighter uppercase italic leading-tight">
               Academic <span className="text-indigo-600">Schedule</span>
             </h1>
             <p className="text-zinc-500 font-medium mt-1">Official weekly timetable for {facultyName}.</p>
           </div>
           
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             <input 
               type="file" 
               accept=".json" 
@@ -210,7 +210,7 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
             <Button 
               variant="outline" 
               onClick={() => fileInputRef.current?.click()}
-              className="h-12 rounded-xl border-zinc-900 border-2 bg-white text-zinc-900 font-black text-[10px] uppercase tracking-widest gap-2 hover:bg-zinc-900 hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+              className="h-12 rounded-xl border-zinc-900 border-2 bg-white text-zinc-900 font-black text-[10px] uppercase tracking-widest gap-2 hover:bg-zinc-900 hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] w-full sm:w-auto"
             >
               {isSyncing ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
               {isSyncing ? 'Syncing...' : 'Update Schedule'}
@@ -227,9 +227,9 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
                 toast.success('Master JSON downloaded');
               }}
               variant="outline" 
-              className="h-12 rounded-xl border-zinc-200 font-black text-[10px] uppercase tracking-widest gap-2"
+              className="h-12 rounded-xl border-zinc-200 font-black text-[10px] uppercase tracking-widest gap-2 w-full sm:w-auto"
             >
-              <FileJson className="h-4 w-4" /> Download Master JSON
+              <FileJson className="h-4 w-4" /> Master JSON
             </Button>
           </div>
         </div>

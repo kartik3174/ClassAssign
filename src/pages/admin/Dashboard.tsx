@@ -131,7 +131,7 @@ export default function AdminPanel({ activeTab = 'dashboard' }: { activeTab?: st
       });
 
       let count = 0;
-      for (const [name, ids] of nameMap.entries()) {
+      for (const [_name, ids] of nameMap.entries()) {
         if (ids.length > 1) {
           const toDelete = ids.slice(1);
           for (const id of toDelete) {
@@ -269,21 +269,21 @@ export default function AdminPanel({ activeTab = 'dashboard' }: { activeTab?: st
       {activeTab === 'personnel' && (
         <div className="space-y-6">
           <Card className="border-none shadow-xl bg-white/60 backdrop-blur-xl">
-            <CardHeader className="border-b border-zinc-100 flex flex-row items-center justify-between">
-              <div className="relative w-72">
+            <CardHeader className="border-b border-zinc-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="relative w-full md:w-72">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                 <Input 
                   placeholder="Search personnel..." 
-                  className="pl-10 h-10 rounded-xl bg-zinc-50/50 border-none text-sm"
+                  className="pl-10 h-10 rounded-xl bg-zinc-50/50 border-none text-sm w-full"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Badge variant="outline" className="font-bold">{uniqueUsers.length} Total</Badge>
+              <Badge variant="outline" className="font-bold w-fit">{uniqueUsers.length} Total</Badge>
             </CardHeader>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
+                <table className="w-full text-sm text-left min-w-[700px]">
                   <thead className="bg-zinc-50/50 text-[10px] font-black uppercase tracking-widest text-zinc-400">
                     <tr>
                       <th className="px-6 py-4">Name & Email</th>
