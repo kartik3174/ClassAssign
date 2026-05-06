@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Faculty Collection
+    match /faculty/{doc} {
+      allow read, write: if true;
+    }
+
+    // Timetable Records (Multiple collection names for safety)
+    match /timetable/{doc} { allow read, write: if true; }
+    match /timetables/{doc} { allow read, write: if true; }
+
+    // Subjects & Academic Data
+    match /subjects/{doc} { allow read, write: if true; }
+    match /workload/{doc} { allow read, write: if true; }
+    match /workloads/{doc} { allow read, write: if true; }
+
+    // Attendance Logging
+    match /attendance/{doc} {
+      allow read, write: if true;
+    }
+
+    // Substitution Management (Handles both singular and plural)
+    match /substitution/{doc} { allow read, write: if true; }
+    match /substitutions/{doc} { allow read, write: if true; }
+
+    // Leave & OD Requests
+    match /leaveRequests/{doc} {
+      allow read, write: if true;
+    }
+
+    // Global Catch-all (Ensures unauthenticated access for prototype)
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

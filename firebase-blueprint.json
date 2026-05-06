@@ -1,0 +1,88 @@
+{
+  "entities": {
+    "faculty": {
+      "title": "Faculty",
+      "description": "Represents a faculty member in the institution",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "department": { "type": "string" },
+        "designation": { "type": "string" },
+        "subjects": { "type": "array" },
+        "workload": { "type": "number" },
+        "isAvailable": { "type": "boolean" },
+        "continuousClasses": { "type": "number" },
+        "acceptanceRate": { "type": "number" },
+        "lastAssignedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "department"]
+    },
+    "timetable": {
+      "title": "Timetable",
+      "description": "Weekly period schedule for a faculty member",
+      "type": "object",
+      "properties": {
+        "facultyId": { "type": "string" },
+        "day": { "type": "string", "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] },
+        "period": { "type": "number", "description": "Period number (1 to 8)" },
+        "subject": { "type": "string" },
+        "class": { "type": "string" },
+        "room": { "type": "string" },
+        "type": { "type": "string", "enum": ["Theory", "Lab"] }
+      },
+      "required": ["facultyId", "day", "period", "subject"]
+    },
+    "attendance": {
+      "title": "Attendance",
+      "description": "Daily attendance log for faculty",
+      "type": "object",
+      "properties": {
+        "facultyId": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "status": { "type": "string", "enum": ["Present", "Absent", "On Duty"] },
+        "remarks": { "type": "string" }
+      },
+      "required": ["facultyId", "date", "status"]
+    },
+    "substitution": {
+      "title": "Substitution",
+      "description": "Record of class substitution assignments",
+      "type": "object",
+      "properties": {
+        "absentFacultyId": { "type": "string" },
+        "substituteFacultyId": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "period": { "type": "number" },
+        "class": { "type": "string" },
+        "subject": { "type": "string" },
+        "status": { "type": "string", "enum": ["Requested", "Accepted", "Rejected"] },
+        "scoreDetail": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["absentFacultyId", "date", "period", "status"]
+    },
+    "leaveRequest": {
+      "title": "Leave Request",
+      "description": "Faculty leave or OD application",
+      "type": "object",
+      "properties": {
+        "facultyId": { "type": "string" },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "type": { "type": "string", "enum": ["Leave", "On Duty"] },
+        "reason": { "type": "string" },
+        "status": { "type": "string", "enum": ["Pending", "Approved", "Rejected"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["facultyId", "startDate", "endDate", "type", "status"]
+    }
+  },
+  "firestore": {
+    "faculty": { "schema": "faculty", "description": "Collection of faculty members" },
+    "timetables": { "schema": "timetable", "description": "Master timetable records" },
+    "attendance": { "schema": "attendance", "description": "Attendance history" },
+    "substitutions": { "schema": "substitution", "description": "Substitution requests and status" },
+    "leaveRequests": { "schema": "leaveRequest", "description": "Faculty leave applications" }
+  }
+}

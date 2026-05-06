@@ -1,0 +1,134 @@
+[
+  {
+    "id": "F001",
+    "name": "Dr.Suganthi",
+    "department": "AI&DS",
+    "subjects": ["DC&CN"]
+  },
+  {
+    "id": "F002",
+    "name": "Mr.J.Jeya Ganesan",
+    "department": "AI&DS",
+    "subjects": ["DC&CN", "Seminar", "IDL-II"]
+  },
+  {
+    "id": "F003",
+    "name": "Mr.B.Ravi Kumar",
+    "department": "AI&DS",
+    "subjects": ["IAI", "UHV"]
+  },
+  {
+    "id": "F004",
+    "name": "Mr.S.Gopinathan",
+    "department": "AI&DS",
+    "subjects": ["PP-II", "Robotics Lab"]
+  },
+  {
+    "id": "F005",
+    "name": "Dr. A. Rajasekar",
+    "department": "AI&DS",
+    "subjects": ["RPA", "PP-II", "Robotics Lab", "IDP"]
+  },
+  {
+    "id": "F006",
+    "name": "Ms.T.Uma Mageswari",
+    "department": "AI&DS",
+    "subjects": ["DL", "UHV", "IDP", "PDB", "PP-II"]
+  },
+  {
+    "id": "F007",
+    "name": "Mrs.S.Kirithika",
+    "department": "AI&DS",
+    "subjects": ["RPA", "BDA", "SE", "PDB", "IAI Lab"]
+  },
+  {
+    "id": "F008",
+    "name": "Ms.J.Ilakkiya",
+    "department": "AI&DS",
+    "subjects": ["ARS", "IRT", "IDL-II", "OTP Lab", "Robotics Lab"]
+  },
+  {
+    "id": "F009",
+    "name": "Ms.J.Anitha",
+    "department": "AI&DS",
+    "subjects": ["SQA", "ABIS", "IDL-II", "BDA Lab", "PP-II"]
+  },
+  {
+    "id": "F010",
+    "name": "Ms. M. Ganga",
+    "department": "AI&DS",
+    "subjects": ["BDA", "CNS", "IDP", "AS-II"]
+  },
+  {
+    "id": "F011",
+    "name": "Dr.S.Parvathi",
+    "department": "AI&DS",
+    "subjects": ["WT&MAD", "RPA", "Robotics Lab", "IDL-II"]
+  },
+  {
+    "id": "F012",
+    "name": "Dr.P.Vijayakumari",
+    "department": "AI&DS",
+    "subjects": ["WSN", "FOC", "Robotics Lab", "IDP"]
+  },
+  {
+    "id": "F013",
+    "name": "Ms.S.Anusuya",
+    "department": "AI&DS",
+    "subjects": ["OTP", "DEV", "FOC", "Seminar", "IDP", "PP-II"]
+  },
+  {
+    "id": "F014",
+    "name": "Ms.D.Madhi Vadhani",
+    "department": "AI&DS",
+    "subjects": ["OTP", "DEV", "IDP", "BDA Lab", "PP-II"]
+  },
+  {
+    "id": "F015",
+    "name": "Dr. A. Raja Brundha",
+    "department": "AI&DS",
+    "subjects": ["DL", "PP-II", "DL Lab", "IDP"]
+  },
+  {
+    "id": "F016",
+    "name": "Ms.R.Krishnapriya",
+    "department": "AI&DS",
+    "subjects": ["SE", "Python", "Industry 4.0", "DL Lab", "Seminar"]
+  },
+  {
+    "id": "F017",
+    "name": "Ms. R. Noousheen",
+    "department": "AI&DS",
+    "subjects": ["Python", "AS-II", "Industry 4.0", "PP-II", "IAI Lab", "Seminar"]
+  },
+  {
+    "id": "F018",
+    "name": "Ms.R.Vijayalakshmi",
+    "department": "AI&DS",
+    "subjects": ["IDM", "DL Lab", "ML Security", "Seminar"]
+  },
+  {
+    "id": "F019",
+    "name": "Dr. C.R. Senthilnathan",
+    "department": "AI&DS",
+    "subjects": ["LIS"]
+  },
+  {
+    "id": "F020",
+    "name": "Dr.K.Baranidharan",
+    "department": "AI&DS",
+    "subjects": ["LIS"]
+  },
+  {
+    "id": "F021",
+    "name": "Dr. R. Avudainayaki",
+    "department": "AI&DS",
+    "subjects": ["LAA"]
+  },
+  {
+    "id": "F022",
+    "name": "Dr. M. Devendran",
+    "department": "AI&DS",
+    "subjects": ["LAA"]
+  }
+]

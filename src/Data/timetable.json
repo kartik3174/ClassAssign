@@ -1,0 +1,156 @@
+{
+  "Dr.Suganthi": {
+    "Monday": ["DC&CN", null, null, null, null, null, null],
+    "Tuesday": ["DC&CN", null, null, null, null, null, null],
+    "Wednesday": ["DC&CN", null, null, null, null, null, null],
+    "Thursday": ["DC&CN", null, null, null, null, null, null],
+    "Friday": ["DC&CN", null, null, null, null, null, null]
+  },
+  "Mr.J.Jeya Ganesan": {
+    "Monday": ["DC&CN", "PP-II", null, "PP-II", null, "Seminar", null],
+    "Tuesday": ["IDL-II", "IDL-II", null, "DC&CN", "Seminar", null, null],
+    "Wednesday": [null, null, null, null, "DL Lab", "DL Lab", "DL Lab"],
+    "Thursday": ["DC&CN", null, null, null, null, null, null],
+    "Friday": ["DC&CN", null, null, null, null, null, null]
+  },
+  "Mr.B.Ravi Kumar": {
+    "Monday": [null, "UHV", null, null, "IAI", "IAI", "Seminar"],
+    "Tuesday": [null, "UHV", "PP-II", null, "PP-II", null, "Seminar"],
+    "Wednesday": [null, null, null, "UHV", null, null, null],
+    "Thursday": [null, "UHV", null, null, null, null, "IAI"],
+    "Friday": [null, "IAI Lab", "IAI Lab", "IAI Lab", null, null, null]
+  },
+  "Mr.S.Gopinathan": {
+    "Monday": [null, "PP-II", null, "PP-II", null, null, "IAI"],
+    "Tuesday": ["OTP Lab", "PP-II", null, "PP-II", null, null, null],
+    "Wednesday": [null, null, null, null, null, null, "IAI"],
+    "Thursday": [null, null, null, null, "Robotics Lab", "Robotics Lab", "Robotics Lab"],
+    "Friday": [null, null, null, null, "IAI Lab", "IAI Lab", "IAI Lab"]
+  },
+  "Dr. A. Rajasekar": {
+    "Monday": [null, "PP-II", null, null, "Robotics Lab", "Robotics Lab", "Robotics Lab"],
+    "Tuesday": [null, null, null, "PP-II", null, "RPA", null],
+    "Wednesday": ["RPA", null, null, null, "RPA", null, null],
+    "Thursday": [null, "RPA", null, null, null, null, null],
+    "Friday": [null, null, "RPA", null, null, "IDP", null]
+  },
+  "Ms.T.Uma Mageswari": {
+    "Monday": [null, null, null, "UHV", null, null, "DL"],
+    "Tuesday": [null, "PDB", "UHV", null, null, "DL", null],
+    "Wednesday": [null, "DL", null, null, null, "UHV", null],
+    "Thursday": [null, "DL", null, null, null, null, null],
+    "Friday": ["UHV", null, null, null, null, "IDP", null]
+  },
+  "Mrs.S.Kirithika": {
+    "Monday": ["SE", null, "BDA", null, "RPA", null, null],
+    "Tuesday": ["RPA", "PDB", null, null, null, "BDA", null],
+    "Wednesday": [null, "BDA", "BDA LAB", "BDA LAB", "RPA", null, null],
+    "Thursday": [null, "RPA", "SE", null, null, null, null],
+    "Friday": ["SE", null, "RPA", null, null, null, null]
+  },
+  "Ms.J.Ilakkiya": {
+    "Monday": ["ARS", null, null, null, "ARS", "ARS", null],
+    "Tuesday": ["ARS", null, "IDL-II", null, "ARS", null, null],
+    "Wednesday": ["OTP Lab", null, null, null, null, "IRT", null],
+    "Thursday": ["IRT", null, null, "IRT", null, "Robotics Lab", null],
+    "Friday": [null, "IRT", null, "IRT", null, null, null]
+  },
+  "Ms.J.Anitha": {
+    "Monday": ["SQA", "PP-II", null, "PP-II", "SQA", "SQA", null],
+    "Tuesday": ["SQA", null, "IDL-II", null, "SQA", null, null],
+    "Wednesday": [null, null, "BDA Lab", null, null, "ABIS", null],
+    "Thursday": ["ABIS", null, null, "ABIS", null, null, null],
+    "Friday": [null, "ABIS", null, "ABIS", null, null, null]
+  },
+  "Ms. M. Ganga": {
+    "Monday": ["BDA", null, "AS-II", null, null, null, "AS-II"],
+    "Tuesday": [null, "AS-II", null, null, "BDA", null, null],
+    "Wednesday": [null, null, "BDA", null, "AS-II", null, "CNS"],
+    "Thursday": ["CNS", null, null, "CNS", null, null, null],
+    "Friday": [null, "CNS", null, "CNS", null, "IDP", null]
+  },
+  "Dr.S.Parvathi": {
+    "Monday": ["WT&MAD", null, null, null, "WT&MAD", "WT&MAD", null],
+    "Tuesday": ["WT&MAD", null, "IDL-II", null, "WT&MAD", null, null],
+    "Wednesday": [null, null, null, null, null, null, null],
+    "Thursday": [null, null, null, null, null, null, null],
+    "Friday": [null, null, null, null, null, null, null]
+  },
+  "Dr.P.Vijayakumari": {
+    "Monday": [null, null, null, null, "Robotics Lab", "Robotics Lab", "Robotics Lab"],
+    "Tuesday": [null, null, null, "FOC", null, null, null],
+    "Wednesday": [null, null, null, null, null, null, "WSN"],
+    "Thursday": ["WSN", null, null, "WSN", null, null, null],
+    "Friday": [null, "WSN", null, "WSN", null, "IDP", null]
+  },
+  "Ms.S.Anusuya": {
+    "Monday": [null, "PP-II", null, "OTP", "FOC", "Seminar", null],
+    "Tuesday": ["OTP Lab", "OTP Lab", null, "OTP", "DEV", null, null],
+    "Wednesday": [null, null, "DEV", null, null, null, null],
+    "Thursday": [null, null, null, null, "DEV", null, "OTP"],
+    "Friday": [null, "DEV", null, null, null, "IDP", null]
+  },
+  "Ms.D.Madhi Vadhani": {
+    "Monday": [null, null, null, "DEV", null, null, "OTP"],
+    "Tuesday": [null, "DEV", null, "PP-II", null, "BDA Lab", null],
+    "Wednesday": ["OTP Lab", "OTP Lab", null, "OTP", null, null, null],
+    "Thursday": [null, null, null, null, "DEV", null, null],
+    "Friday": [null, "OTP", null, null, null, "DEV", null]
+  },
+  "Dr. A. Raja Brundha": {
+    "Monday": [null, null, null, null, null, null, null],
+    "Tuesday": [null, null, null, null, null, null, null],
+    "Wednesday": ["DL", null, null, "DL", null, null, null],
+    "Thursday": [null, "DL Lab", "DL Lab", "DL Lab", "DL", null, null],
+    "Friday": [null, null, null, "DL", null, "IDP", null]
+  },
+  "Ms.R.Krishnapriya": {
+    "Monday": [null, null, null, null, null, null, "Seminar"],
+    "Tuesday": [null, null, "SE", null, null, null, null],
+    "Wednesday": [null, null, null, null, null, "DL Lab", "DL Lab"],
+    "Thursday": [null, null, null, "Industry 4.0", null, null, null],
+    "Friday": ["SE", null, null, null, null, null, null]
+  },
+  "Ms. R. Noousheen": {
+    "Monday": ["AS-II", null, null, null, "Industry 4.0", null, null],
+    "Tuesday": [null, "PP-II", null, "PP-II", null, null, "Seminar"],
+    "Wednesday": [null, null, "AS-II", null, null, null, null],
+    "Thursday": [null, null, null, null, null, null, null],
+    "Friday": [null, "IAI Lab", "IAI Lab", "IAI Lab", "AS-II", null, null]
+  },
+  "Ms.R.Vijayalakshmi": {
+    "Monday": ["IDM", null, null, null, "IDM", "IDM", null],
+    "Tuesday": ["IDM", null, null, null, "IDM", null, "Seminar"],
+    "Wednesday": [null, null, null, null, null, null, null],
+    "Thursday": [null, "DL Lab", "DL Lab", "DL Lab", null, null, null],
+    "Friday": [null, null, null, null, null, null, null]
+  },
+  "Dr. C.R. Senthilnathan": {
+    "Monday": [null, null, null, null, "LIS", null, null],
+    "Tuesday": [null, null, null, null, null, "LIS", null],
+    "Wednesday": [null, null, null, "LIS", null, null, null],
+    "Thursday": [null, null, null, null, null, null, null],
+    "Friday": [null, null, null, null, null, null, null]
+  },
+  "Dr.K.Baranidharan": {
+    "Monday": [null, null, null, null, "LIS", null, null],
+    "Tuesday": ["LIS", null, null, null, null, null, null],
+    "Wednesday": [null, null, null, null, "LIS", null, null],
+    "Thursday": [null, null, null, null, null, null, null],
+    "Friday": [null, null, null, null, null, null, null]
+  },
+  "Dr. R. Avudainayaki": {
+    "Monday": [null, null, "LAA", null, null, null, null],
+    "Tuesday": [null, null, null, null, "LAA", null, null],
+    "Wednesday": [null, null, null, null, null, null, null],
+    "Thursday": [null, null, "LAA", null, null, "LAA", null],
+    "Friday": [null, null, null, null, "LAA", null, null]
+  },
+  "Dr. M. Devendran": {
+    "Monday": [null, "LAA", null, null, null, null, null],
+    "Tuesday": [null, null, null, null, "LAA", null, null],
+    "Wednesday": [null, "LAA", null, null, null, null, null],
+    "Thursday": [null, null, null, null, null, null, "LAA"],
+    "Friday": [null, null, "LAA", null, null, null, null]
+  }
+}

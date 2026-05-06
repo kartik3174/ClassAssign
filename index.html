@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI&DS Staff Assign</title>
+  </head>
+  <body>
+    <div id="root">
+      <div id="app-loading" style="height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; background-color: #09090b; color: #71717a; font-family: sans-serif; transition: opacity 0.5s ease-in-out;">
+        <div style="text-align: center;">
+          <div style="width: 48px; height: 48px; border: 3px solid rgba(99, 102, 241, 0.1); border-top-color: #6366f1; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);"></div>
+          <style>
+            @keyframes spin { to { transform: rotate(360deg); } }
+            body { margin: 0; padding: 0; background-color: #09090b; }
+          </style>
+          <p style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; color: #a1a1aa;">Initializing System</p>
+          <div id="loading-error" style="display: none; margin-top: 24px; padding: 16px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; max-width: 300px;">
+            <p style="color: #ef4444; font-size: 13px; margin: 0 0 12px;">React failed to initialize</p>
+            <button onclick="window.location.reload()" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer;">Retry Loading</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // If React takes too long, show the retry button
+      setTimeout(() => {
+        const errorEl = document.getElementById('loading-error');
+        if (errorEl && document.getElementById('app-loading')) {
+          errorEl.style.display = 'block';
+        }
+      }, 10000);
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
