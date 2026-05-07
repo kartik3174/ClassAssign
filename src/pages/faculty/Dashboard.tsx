@@ -1,15 +1,28 @@
 import { useState, useEffect, useRef } from 'react';
-import { db } from '@/lib/firebase';
-import { collection, query, where, onSnapshot, addDoc, getDocs, deleteDoc } from 'firebase/firestore';
-import { TimetableEntry, LeaveRequest, Substitution, Faculty } from '@/types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+import { db } from '../../lib/firebase';
+import { 
+  collection, 
+  query, 
+  where, 
+  onSnapshot, 
+  addDoc, 
+  getDocs, 
+  deleteDoc, 
+  doc, 
+  updateDoc,
+  QuerySnapshot,
+  DocumentData 
+} from 'firebase/firestore';
+import { TimetableEntry, LeaveRequest, Substitution, Faculty } from '../../types';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Badge } from '../../components/ui/badge';
+import { Input } from '../../components/ui/input';
+import { Textarea } from '../../components/ui/textarea';
 import { toast } from 'sonner';
 import { Calendar, Clock, Send, UserCheck, Zap, Upload, FileJson, RefreshCw } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import timetableData from '@/Data/timetable.json';
+import { motion, AnimatePresence } from 'motion/react';
+import timetableData from '../../Data/timetable.json';
 
 interface FacultyDashboardProps {
   activeTab?: string;
@@ -36,13 +49,13 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
 
     // 1. Fetch Profile
     const fQuery = query(collection(db, 'faculty'), where('name', '==', facultyName));
-    const unsubscribeFaculty = onSnapshot(fQuery, (snapshot) => {
+    const unsubscribeFaculty = onSnapshot(fQuery, (snapshot: QuerySnapshot<DocumentData>) => {
       if (!snapshot.empty) setMyProfile({ id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as Faculty);
     });
 
     // 2. Fetch Timetable
     const tQuery = query(collection(db, 'timetable'), where('facultyId', '==', facultyName));
-    const unsubscribeTimetable = onSnapshot(tQuery, (snapshot) => {
+    const unsubscribeTimetable = onSnapshot(tQuery, (snapshot: QuerySnapshot<DocumentData>) => {
       if (snapshot.empty) {
         // Fallback to local JSON data
         const localData = (timetableData as any)[facultyName || ''];
@@ -69,20 +82,20 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
           setMyTimetable([]);
         }
       } else {
-        setMyTimetable(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as TimetableEntry)));
+        setMyTimetable(snapshot.docs.map((doc: DocumentData) => ({ id: doc.id, ...doc.data() } as TimetableEntry)));
       }
     });
 
     // 3. Fetch Leave Requests
     const lQuery = query(collection(db, 'leaveRequests'), where('facultyId', '==', facultyName));
-    const unsubscribeLeave = onSnapshot(lQuery, (snapshot) => {
-      setMyRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as LeaveRequest)));
+    const unsubscribeLeave = onSnapshot(lQuery, (snapshot: QuerySnapshot<DocumentData>) => {
+      setMyRequests(snapshot.docs.map((doc: DocumentData) => ({ id: doc.id, ...doc.data() } as LeaveRequest)));
     });
 
     // 4. Fetch Substitutions Assigned to Me
     const sQuery = query(collection(db, 'substitution'), where('assignedTeacherId', '==', facultyName));
-    const unsubscribeSubs = onSnapshot(sQuery, (snapshot) => {
-      setSubstitutions(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Substitution)));
+    const unsubscribeSubs = onSnapshot(sQuery, (snapshot: QuerySnapshot<DocumentData>) => {
+      setSubstitutions(snapshot.docs.map((doc: DocumentData) => ({ id: doc.id, ...doc.data() } as Substitution)));
     });
 
     return () => {
@@ -106,6 +119,15 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
       setIsLeaveModalOpen(false);
     } catch (error) {
       toast.error('Failed to submit request');
+    }
+  };
+
+  const handleUpdateSubStatus = async (subId: string, status: 'Accepted' | 'Rejected') => {
+    try {
+      await updateDoc(doc(db, 'substitution', subId), { status });
+      toast.success(`Substitution ${status.toLowerCase()} successfully`);
+    } catch (error) {
+      toast.error('Failed to update status');
     }
   };
 
@@ -135,7 +157,7 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
           // 1. Clear existing entries for this specific staff
           const q = query(timetableRef, where('facultyId', '==', staffName));
           const snapshot = await getDocs(q);
-          const deletePromises = snapshot.docs.map(d => deleteDoc(d.ref));
+          const deletePromises = snapshot.docs.map((d: DocumentData) => deleteDoc(d.ref));
           await Promise.all(deletePromises);
 
           // 2. Add new entries
@@ -373,8 +395,19 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
                          <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Period {sub.period}</span>
                       </div>
                       <div className="mt-4 flex gap-2">
-                         <Button className="h-9 px-4 rounded-xl bg-white text-zinc-900 hover:bg-indigo-50 font-black text-[10px] uppercase tracking-widest flex-1">Accept</Button>
-                         <Button variant="outline" className="h-9 px-4 rounded-xl border-white/10 text-white hover:bg-red-500/10 hover:text-red-500 font-black text-[10px] uppercase tracking-widest">Reject</Button>
+                         <Button 
+                           onClick={() => handleUpdateSubStatus(sub.id, 'Accepted')}
+                           className="h-9 px-4 rounded-xl bg-white text-zinc-900 hover:bg-indigo-50 font-black text-[10px] uppercase tracking-widest flex-1"
+                         >
+                           Accept
+                         </Button>
+                         <Button 
+                           onClick={() => handleUpdateSubStatus(sub.id, 'Rejected')}
+                           variant="outline" 
+                           className="h-9 px-4 rounded-xl border-white/10 text-white hover:bg-red-500/10 hover:text-red-500 font-black text-[10px] uppercase tracking-widest"
+                         >
+                           Reject
+                         </Button>
                       </div>
                     </div>
                   ))}
@@ -458,7 +491,7 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
 
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-1">Reason</label>
-                    <textarea 
+                    <Textarea 
                       className="w-full h-32 rounded-xl border border-zinc-200 bg-white p-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none resize-none"
                       placeholder="Specify your reason..."
                       value={leaveForm.reason}

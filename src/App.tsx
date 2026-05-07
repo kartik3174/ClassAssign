@@ -14,14 +14,15 @@ import {
   Zap,
   Activity
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from './components/ui/button';
+import { Badge } from './components/ui/badge';
 
 import FacultyDashboard from './pages/faculty/Dashboard';
 import HODDashboard from './pages/hod/Dashboard';
 import AdminPanel from './pages/admin/Dashboard';
 import StudentDashboard from './pages/student/Dashboard';
 import Login from './pages/Login';
+import ResetPassword from './pages/ResetPassword';
 
 import logo from './assets/sairam-logo.jpg';
 
@@ -34,6 +35,17 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [timeLeft, setTimeLeft] = useState(SESSION_TIMEOUT);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024);
+  const [resetCode, setResetCode] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get('mode');
+    const oobCode = params.get('oobCode');
+
+    if (mode === 'resetPassword' && oobCode) {
+      setResetCode(oobCode);
+    }
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -112,6 +124,14 @@ export default function App() {
   };
 
   if (loading) return <div className="h-screen w-full flex items-center justify-center bg-zinc-950 text-white font-black italic">INITIALIZING AI&DS...</div>;
+  
+  if (resetCode) {
+    return <ResetPassword oobCode={resetCode} onComplete={() => {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      setResetCode(null);
+    }} />;
+  }
+
   if (!user) return <Login />;
 
   const navItems = getNavItems();

@@ -24,7 +24,6 @@ export const uploadFaculty = async () => {
     }
     
     // 2. Add missing faculty from timetable.json
-    let nextId = 5; // Starting ID for auto-generated faculty
     for (const teacherName of Object.keys(timetableData)) {
       if (!facultyMap.has(teacherName)) {
         facultyMap.set(teacherName, {

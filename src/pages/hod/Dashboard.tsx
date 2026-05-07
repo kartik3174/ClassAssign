@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-import { db } from '@/lib/firebase';
+import { db } from '../../lib/firebase';
 import { collection, query, onSnapshot } from 'firebase/firestore';
-import { LeaveRequest, Faculty, Substitution, TimetableEntry } from '@/types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { LeaveRequest, Faculty, Substitution, TimetableEntry } from '../../types';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Badge } from '../../components/ui/badge';
+import { Dialog, DialogContent } from '../../components/ui/dialog';
 import { toast } from 'sonner';
 import { Zap, Users, BarChart3, Clock, Calendar } from 'lucide-react';
-import { findSubstituteCandidates } from '@/services/substitutionEngine';
-import { createSubstitutionRequest, updateLeaveStatus } from '@/services/dataService';
-import timetableData from '@/Data/timetable.json';
+import { findSubstituteCandidates } from '../../services/substitutionEngine';
+import { createSubstitutionRequest, updateLeaveStatus } from '../../services/dataService';
+import timetableData from '../../Data/timetable.json';
 
 export default function HODDashboard({ activeTab, user }: { activeTab?: string, user: any }) {
   const [requests, setRequests] = useState<LeaveRequest[]>([]);

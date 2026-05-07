@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { auth } from '../lib/firebase';
 import { 
   signInWithPopup, 
   GoogleAuthProvider, 
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail
 } from 'firebase/auth';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { toast } from 'sonner';
 import { 
   Mail, 
@@ -17,10 +18,12 @@ import {
   RefreshCw,
   ArrowRight,
   Eye,
-  EyeOff
+  EyeOff,
+  ChevronLeft
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import logo from '../assets/sairam-logo.jpg';
+import { createLog } from '../services/dataService';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -29,17 +32,20 @@ export default function Login() {
   const [captchaInput, setCaptchaInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [showManual, setShowManual] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [selectedRole, setSelectedRole] = useState<'faculty' | 'hod' | 'admin' | 'student'>('faculty');
+  const [emailSent, setEmailSent] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
 
   const AUTHORIZED_FACULTY = [
     "Dr.Suganthi", "Mr.J.Jeya Ganesan", "Mr.B.Ravi Kumar", "Mr.S.Gopinathan",
-    "Dr. A. Rajasekar", "Ms.T.Uma Mageswari", "Mrs.S.Kirithika", "Ms.J.Ilakkiya",
-    "Ms.J.Anitha", "Ms. M. Ganga", "Dr.S.Parvathi", "Dr.P.Vijayakumari",
-    "Ms.S.Anusuya", "Ms.D.Madhi Vadhani", "Dr. A. Raja Brundha", "Ms.R.Krishnapriya",
-    "Ms. R. Noousheen", "Ms.R.Vijayalakshmi", "Dr. C.R. Senthilnathan",
-    "Dr.K.Baranidharan", "Dr. R. Avudainayaki", "Dr. M. Devendran"
+    "Dr.A.Rajasekar", "Ms.T.Uma Mageswari", "Mrs.S.Kirithika", "Ms.J.Ilakkiya",
+    "Ms.J.Anitha", "Ms.M.Ganga", "Dr.S.Parvathi", "Dr.P.Vijayakumari",
+    "Ms.S.Anusuya", "Ms.D.Madhi Vadhani", "Dr.A.Raja Brundha", "Ms.R.Krishnapriya",
+    "Ms.R.Noousheen", "Ms.R.Vijayalakshmi", "Dr.C.R.Senthilnathan",
+    "Dr.K.Baranidharan", "Dr.R.Avudainayaki", "Dr.M.Devendran"
   ];
 
   const AUTHORIZED_STUDENTS = ["MADHUMITHA VD", "SRIKANTH R"];
@@ -53,9 +59,29 @@ export default function Login() {
     setCaptcha(result);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     generateCaptcha();
   }, []);
+
+  const resolveEmailFromName = (name: string) => {
+    const lowName = name.toLowerCase().trim();
+    
+    // Hardcoded special cases
+    if (lowName === 'dr.suganthi') return 'suganthi@sairamit.edu.in';
+    if (lowName === 'kartik singh') return 'kartik.singh@sairamit.edu.in';
+    if (lowName === 'madhumitha vd') return 'madhumitha.vd@sairamit.edu.in';
+    if (lowName === 'srikanth r') return 'srikanth.r@sairamit.edu.in';
+
+    // Generic mapping for faculty: "Mr.J.Jeya Ganesan" -> "jeya.ganesan@sairamit.edu.in"
+    // Remove prefixes (Mr., Ms., Dr., Mrs.) and initials
+    const cleanName = name.replace(/^(Mr\.|Ms\.|Dr\.|Mrs\.|Ms)\s*/i, '')
+                         .replace(/^[A-Z]\.\s*/i, '')
+                         .trim()
+                         .toLowerCase()
+                         .replace(/\s+/g, '.');
+    
+    return `${cleanName}@sairamit.edu.in`;
+  };
 
   const isEmailAllowed = (userEmail: string) => {
     const lowEmail = userEmail.toLowerCase();
@@ -78,7 +104,9 @@ export default function Login() {
         return;
       }
 
-      if (selectedRole === 'hod' && result.user.displayName !== 'Dr.Suganthi' && result.user.email !== 'suganthi@sairamit.edu.in') {
+      if (selectedRole === 'hod' && 
+          result.user.displayName?.toLowerCase() !== 'dr.suganthi' && 
+          result.user.email?.toLowerCase() !== 'suganthi@sairamit.edu.in') {
         await auth.signOut();
         toast.error('Access Restricted', {
           description: 'Only Dr. Suganthi is authorized to access the HOD portal.'
@@ -86,7 +114,9 @@ export default function Login() {
         return;
       }
 
-      if (selectedRole === 'admin' && result.user.displayName !== 'KARTIK SINGH' && result.user.email !== 'kartik.singh@sairamit.edu.in') {
+      if (selectedRole === 'admin' && 
+          result.user.displayName?.toLowerCase() !== 'kartik singh' && 
+          result.user.email?.toLowerCase() !== 'kartik.singh@sairamit.edu.in') {
         await auth.signOut();
         toast.error('Access Restricted', {
           description: 'Only KARTIK SINGH is authorized to access the Admin portal.'
@@ -112,8 +142,11 @@ export default function Login() {
       localStorage.setItem('userRole', selectedRole);
       localStorage.setItem('facultyName', result.user.displayName || '');
       
+      // Log login event
+      createLog('Auth', `${result.user.displayName || result.user.email} logged in as ${selectedRole} via Google`, result.user.uid).catch(console.error);
+
       // Save role in Firestore
-      const { createUserProfile } = await import('@/services/dataService');
+      const { createUserProfile } = await import('../services/dataService');
       await createUserProfile(result.user.uid, {
         name: result.user.displayName,
         email: result.user.email,
@@ -122,6 +155,10 @@ export default function Login() {
       });
 
       toast.success(`Logged in successfully as ${selectedRole} with Google`);
+      
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 500);
     } catch (error: any) {
       if (error.code !== 'auth/popup-closed-by-user') {
         toast.error(error.message || 'Google login failed');
@@ -141,74 +178,52 @@ export default function Login() {
       return;
     }
 
-    // Special handling for Faculty Name Login
-    if (selectedRole === 'faculty') {
-      const matchedFaculty = AUTHORIZED_FACULTY.find(f => f.toLowerCase() === email.toLowerCase());
-      if (matchedFaculty) {
-        localStorage.setItem('userRole', 'faculty');
-        localStorage.setItem('facultyName', matchedFaculty);
-        toast.success(`Welcome ${matchedFaculty}`, {
-          description: "Accessing your personal timetable..."
-        });
-        window.location.reload();
-        return;
+    const isEmailInput = email.includes('@');
+    // Resolve name to email for name-based input
+    let targetEmail = email;
+    let resolvedName = '';
+
+    const normalize = (s: string) => s.toLowerCase().replace(/^(mr\.|ms\.|dr\.|mrs\.|ms)\s*/i, '').replace(/[^a-z0-9]/g, '');
+
+    if (!isEmailInput) {
+      const normalizedInput = normalize(email);
+      
+      if (selectedRole === 'faculty') {
+        const matchedFaculty = AUTHORIZED_FACULTY.find(f => normalize(f) === normalizedInput);
+        if (!matchedFaculty) {
+          toast.error('Unauthorized Name', { description: 'This faculty name is not in the authorized list.' });
+          return;
+        }
+        targetEmail = resolveEmailFromName(matchedFaculty);
+        resolvedName = matchedFaculty;
+      } else if (selectedRole === 'hod') {
+        if (normalizedInput !== 'suganthi' && normalizedInput !== 'drsuganthi') {
+          toast.error('Unauthorized Name', { description: 'Only Dr. Suganthi is authorized as HOD.' });
+          return;
+        }
+        targetEmail = 'suganthi@sairamit.edu.in';
+        resolvedName = 'Dr.Suganthi';
+      } else if (selectedRole === 'admin') {
+        if (normalizedInput !== 'kartiksingh') {
+          toast.error('Unauthorized Name', { description: 'Only KARTIK SINGH is authorized as Admin.' });
+          return;
+        }
+        targetEmail = 'kartik.singh@sairamit.edu.in';
+        resolvedName = 'KARTIK SINGH';
+      } else if (selectedRole === 'student') {
+        const matchedStudent = AUTHORIZED_STUDENTS.find(s => normalize(s) === normalizedInput);
+        if (!matchedStudent) {
+          toast.error('Unauthorized Name', { description: 'This student name is not in the authorized list.' });
+          return;
+        }
+        targetEmail = resolveEmailFromName(matchedStudent);
+        resolvedName = matchedStudent;
       }
     }
 
-    // Special handling for HOD login
-    if (selectedRole === 'hod') {
-      if (email !== 'Dr.Suganthi') {
-        toast.error('Access Denied', {
-          description: 'Only authorized HOD (Dr. Suganthi) can access this portal.'
-        });
-        return;
-      }
-      localStorage.setItem('userRole', 'hod');
-      localStorage.setItem('facultyName', 'Dr.Suganthi');
-      toast.success('Welcome HOD Dr. Suganthi');
-      window.location.reload();
-      return;
-    }
-
-    // Special handling for Admin login
-    if (selectedRole === 'admin') {
-      if (email.toUpperCase() !== 'KARTIK SINGH') {
-        toast.error('Access Denied', {
-          description: 'Only KARTIK SINGH is authorized to access the Admin portal.'
-        });
-        return;
-      }
-      localStorage.setItem('userRole', 'admin');
-      localStorage.setItem('facultyName', 'KARTIK SINGH');
-      toast.success('Welcome Admin KARTIK SINGH');
-      window.location.reload();
-      return;
-    }
-
-    // Special handling for Student login
-    if (selectedRole === 'student') {
-      const lowEmail = email.toLowerCase();
-      const matchedStudent = AUTHORIZED_STUDENTS.find(s => 
-        s.toLowerCase() === lowEmail || 
-        (s.toLowerCase().replace(' ', '.') + '@sairamit.edu.in') === lowEmail
-      );
-      if (matchedStudent) {
-        localStorage.setItem('userRole', 'student');
-        localStorage.setItem('facultyName', matchedStudent);
-        toast.success(`Welcome CR ${matchedStudent}`);
-        window.location.reload();
-        return;
-      } else {
-        toast.error('Access Denied', {
-          description: 'Only MADHUMITHA VD and SRIKANTH R are authorized to access the Student portal.'
-        });
-        return;
-      }
-    }
-
-    if (!isEmailAllowed(email)) {
+    if (!isEmailAllowed(targetEmail)) {
       toast.error('Access Restricted', {
-        description: 'Manual login also requires a Sairam Institution authorized email.'
+        description: 'Login requires a Sairam Institution authorized email domain.'
       });
       return;
     }
@@ -216,16 +231,51 @@ export default function Login() {
     try {
       setLoading(true);
       if (isRegistering) {
-        await createUserWithEmailAndPassword(auth, email, password);
-        // Save role in local storage for demo (In production, use Firestore user profile)
+        const userCred = await createUserWithEmailAndPassword(auth, targetEmail, password);
+        const finalName = resolvedName || targetEmail.split('@')[0];
+        
         localStorage.setItem('userRole', selectedRole);
-        toast.success('Account created successfully', {
-          description: `Welcome to AI&DS Staff Assign! You are now signed in as ${selectedRole}.`
+        localStorage.setItem('facultyName', finalName);
+        
+        // Save role in Firestore - use a more robust approach
+        const { createUserProfile } = await import('../services/dataService');
+        await createUserProfile(userCred.user.uid, {
+          name: finalName,
+          email: targetEmail,
+          role: selectedRole,
+          department: 'AI&DS'
         });
+
+        createLog('Auth', `${targetEmail} registered as ${selectedRole}`, userCred.user.uid).catch(console.error);
+        
+        toast.success(selectedRole === 'student' ? 'Student Account Created!' : 'Account Created Successfully', {
+          description: `Welcome ${finalName}! You are now signed in.`
+        });
+        
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 800);
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        const userCred = await signInWithEmailAndPassword(auth, targetEmail, password);
         localStorage.setItem('userRole', selectedRole);
+        localStorage.setItem('facultyName', resolvedName || userCred.user.displayName || targetEmail.split('@')[0]);
+        
+        // Ensure profile exists/is updated
+        const { createUserProfile } = await import('../services/dataService');
+        createUserProfile(userCred.user.uid, {
+          name: resolvedName || userCred.user.displayName || targetEmail.split('@')[0],
+          email: targetEmail,
+          role: selectedRole,
+          department: 'AI&DS'
+        }).catch(console.error);
+
+        createLog('Auth', `${targetEmail} logged in as ${selectedRole}`, userCred.user.uid).catch(console.error);
+        
         toast.success(`Logged in successfully as ${selectedRole}`);
+        
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
       }
     } catch (error: any) {
       console.error("Auth Error:", error.code, error.message);
@@ -256,6 +306,67 @@ export default function Login() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.includes('@')) {
+      toast.error('Invalid Email', { description: 'Please enter a valid institution email address.' });
+      return;
+    }
+
+    setLoading(true);
+    console.log("Attempting to send password reset to:", email);
+    try {
+      const actionCodeSettings = {
+        url: window.location.origin,
+        handleCodeInApp: true,
+      };
+      await sendPasswordResetEmail(auth, email, actionCodeSettings);
+      toast.success('Reset Link Sent', {
+        description: `A secure password reset link has been generated and sent to ${email}.`
+      });
+      setEmailSent(true);
+    } catch (error: any) {
+      console.error("Password Reset Error:", error.code, error.message);
+      if (error.code === 'auth/user-not-found') {
+        toast.error('Account Not Found', { 
+          description: 'This email is not registered. Please create an account first or ensure you have entered the correct official email.' 
+        });
+      } else if (error.code === 'auth/unauthorized-continue-uri') {
+        toast.error('Domain Not Authorized', {
+          description: 'The current domain (localhost) is not authorized in Firebase Console > Authentication > Settings > Authorized domains.'
+        });
+      } else if (error.code === 'auth/operation-not-allowed') {
+        toast.error('Service Disabled', {
+          description: 'Email/Password sign-in is not enabled in your Firebase Console. Please enable it under Authentication > Sign-in method.'
+        });
+      } else {
+        toast.error('Reset Failed', { description: error.message });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendEmail = async () => {
+    if (resendLoading) return;
+    setResendLoading(true);
+    try {
+      const actionCodeSettings = {
+        url: window.location.origin,
+        handleCodeInApp: true,
+      };
+      await sendPasswordResetEmail(auth, email, actionCodeSettings);
+      toast.success('Email Resent', {
+        description: 'A new secure password reset link has been sent.'
+      });
+    } catch (error: any) {
+      console.error("Resend Error:", error.code, error.message);
+      toast.error('Resend Failed', { description: error.message });
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -374,6 +485,120 @@ export default function Login() {
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </motion.div>
+              ) : showForgotPassword ? (
+                <motion.div
+                  key="forgot"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="space-y-6"
+                >
+                  {!emailSent ? (
+                    <form onSubmit={handleForgotPassword} className="space-y-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Button 
+                          type="button" 
+                          variant="ghost" 
+                          size="icon" 
+                          onClick={() => {
+                            setShowForgotPassword(false);
+                          }}
+                          className="h-8 w-8 rounded-full"
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                        </Button>
+                        <h3 className="font-black uppercase tracking-widest text-xs text-zinc-900">
+                          Account Recovery
+                        </h3>
+                      </div>
+                      <div className="space-y-4">
+                        <p className="text-xs text-zinc-500 font-medium leading-relaxed">
+                          To help keep your account secure, we need to verify it's really you. Enter your email to receive a password reset link.
+                        </p>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400" />
+                          <Input 
+                            type="email" 
+                            placeholder="official.email@sairamit.edu.in" 
+                            className="h-12 pl-10 rounded-xl bg-white/50 border-zinc-200"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <Button 
+                        type="submit" 
+                        className="h-14 w-full bg-zinc-900 text-white rounded-2xl text-lg font-bold shadow-xl transition-all hover:scale-[1.02]"
+                        disabled={loading}
+                      >
+                        {loading ? 'Sending...' : 'Next'}
+                      </Button>
+                    </form>
+                  ) : (
+                    <div className="text-center space-y-6 py-4">
+                      <div className="mx-auto w-16 h-16 bg-green-50 rounded-full flex items-center justify-center relative">
+                        <Mail className="h-8 w-8 text-green-600" />
+                        <motion.div 
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="absolute -top-1 -right-1 h-5 w-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center"
+                        >
+                          <ShieldCheck className="h-3 w-3 text-white" />
+                        </motion.div>
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="text-xl font-bold text-zinc-900 tracking-tight">Check your email</h3>
+                        <p className="text-sm text-zinc-500">
+                          We've sent a password reset link to <br/>
+                          <span className="font-bold text-zinc-900 break-all">{email}</span>
+                        </p>
+                      </div>
+
+                      <div className="bg-zinc-50 rounded-2xl p-4 text-left space-y-3 border border-zinc-100">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Not receiving the email?</p>
+                        <ul className="text-[11px] text-zinc-500 space-y-2 list-disc pl-4 font-medium">
+                          <li>Check your <span className="font-bold text-zinc-900">Spam or Junk</span> folder</li>
+                          <li>Verify that <span className="font-bold text-zinc-900">{email}</span> is correct</li>
+                          <li>Ensure your institution's firewall isn't blocking Firebase emails</li>
+                          <li>Wait a few minutes, sometimes delivery is delayed</li>
+                        </ul>
+                      </div>
+
+                      <div className="pt-2 space-y-3">
+                        <Button 
+                          onClick={handleResendEmail} 
+                          disabled={resendLoading}
+                          variant="outline"
+                          className="w-full h-12 rounded-xl font-bold border-zinc-200 hover:bg-zinc-50 gap-2"
+                        >
+                          <RefreshCw className={`h-4 w-4 ${resendLoading ? 'animate-spin' : ''}`} />
+                          {resendLoading ? 'Resending...' : 'Resend Link'}
+                        </Button>
+                        <div className="flex gap-2">
+                          <Button 
+                            onClick={() => setEmailSent(false)} 
+                            variant="ghost"
+                            className="flex-1 h-12 rounded-xl font-bold text-xs"
+                          >
+                            Edit Email
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            onClick={() => {
+                              setShowForgotPassword(false);
+                              setEmailSent(false);
+                            }}
+                            className="flex-1 h-12 rounded-xl font-bold text-zinc-500 text-xs"
+                          >
+                            Back to Sign In
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
               ) : (
                 <motion.form
                   key="manual"
@@ -421,6 +646,16 @@ export default function Login() {
                         onClick={() => setShowPassword(!showPassword)}
                       >
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                    <div className="flex justify-end">
+                      <Button 
+                        type="button"
+                        variant="link" 
+                        onClick={() => setShowForgotPassword(true)}
+                        className="p-0 h-auto text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-primary transition-colors"
+                      >
+                        Forgot Password?
                       </Button>
                     </div>
                   </div>
@@ -479,6 +714,7 @@ export default function Login() {
                       onClick={() => {
                         setShowManual(false);
                         setIsRegistering(false);
+                        setShowForgotPassword(false);
                       }}
                       className="w-full text-xs font-bold text-zinc-500 hover:text-zinc-800"
                     >

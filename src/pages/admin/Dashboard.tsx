@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
-import { db } from '@/lib/firebase';
+import { db } from '../../lib/firebase';
 import { collection, onSnapshot, doc, setDoc, deleteDoc } from 'firebase/firestore';
-import { Faculty, SystemLog, UserRole } from '@/types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+import { Faculty, SystemLog, UserRole } from '../../types';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Badge } from '../../components/ui/badge';
+import { Input } from '../../components/ui/input';
 import { toast } from 'sonner';
 import { Users, Activity, Settings, Plus, Trash2, Edit2, Search, Database, RefreshCw } from 'lucide-react';
-import { motion } from 'framer-motion';
-import timetableData from '@/Data/timetable.json';
+import { motion } from 'motion/react';
+import timetableData from '../../Data/timetable.json';
 import { addDoc } from 'firebase/firestore';
 
 export default function AdminPanel({ activeTab = 'dashboard' }: { activeTab?: string }) {
@@ -201,13 +201,15 @@ export default function AdminPanel({ activeTab = 'dashboard' }: { activeTab?: st
             </Card>
 
             <Card className="glass shadow-sm border-none overflow-hidden relative group">
-              <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform"><Database className="h-24 w-24" /></div>
+              <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform"><Activity className="h-24 w-24" /></div>
               <CardHeader className="pb-2">
-                <CardTitle className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Cloud Storage</CardTitle>
+                <CardTitle className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Admin Logins</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-black text-emerald-600">Active</div>
-                <p className="text-xs font-bold text-zinc-400 mt-1 uppercase tracking-tighter">Firebase instance live</p>
+                <div className="text-4xl font-black text-amber-600">
+                  {logs.filter(l => l.type === 'Auth' && (l.message.includes('Admin') || l.message.includes('KARTIK'))).length}
+                </div>
+                <p className="text-xs font-bold text-zinc-400 mt-1 uppercase tracking-tighter">Total Sessions Tracked</p>
               </CardContent>
             </Card>
           </div>
@@ -323,42 +325,98 @@ export default function AdminPanel({ activeTab = 'dashboard' }: { activeTab?: st
       )}
 
       {activeTab === 'logs' && (
-        <div className="space-y-6">
-          <Card className="bg-zinc-900 text-white shadow-2xl border-none">
-            <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-6">
-              <div>
-                <CardTitle className="text-xs font-black uppercase tracking-[0.2em] text-indigo-400">System-wide Event Log</CardTitle>
-                <p className="text-[10px] text-zinc-500 mt-1 uppercase font-bold">Real-time audit trail of all actions</p>
-              </div>
-              <Activity className="h-5 w-5 text-indigo-400 animate-pulse" />
-            </CardHeader>
-            <CardContent className="p-0 max-h-[700px] overflow-y-auto custom-scrollbar">
-              <div className="divide-y divide-white/5">
-                {logs.sort((a,b) => b.timestamp.localeCompare(a.timestamp)).map(log => (
-                  <div key={log.id} className="p-6 hover:bg-white/5 transition-colors group">
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="flex items-center gap-3">
-                        <Badge variant="outline" className={`uppercase text-[9px] font-black border-none px-0 ${
-                          log.type === 'Substitution' ? 'text-emerald-400' : 
-                          log.type === 'Auth' ? 'text-indigo-400' : 'text-zinc-400'
-                        }`}>{log.type}</Badge>
-                        <span className="h-1 w-1 rounded-full bg-zinc-800" />
-                        <span className="text-zinc-600 text-[10px] font-bold uppercase tracking-tight">{new Date(log.timestamp).toLocaleDateString()}</span>
-                        <span className="text-zinc-600 text-[10px] font-bold uppercase tracking-tight">{new Date(log.timestamp).toLocaleTimeString()}</span>
+        <div className="grid lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-6">
+            <Card className="bg-zinc-900 text-white shadow-2xl border-none overflow-hidden rounded-[2rem]">
+              <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-6">
+                <div>
+                  <CardTitle className="text-xs font-black uppercase tracking-[0.2em] text-indigo-400">System-wide Event Log</CardTitle>
+                  <p className="text-[10px] text-zinc-500 mt-1 uppercase font-bold">Real-time audit trail of all actions</p>
+                </div>
+                <Activity className="h-5 w-5 text-indigo-400 animate-pulse" />
+              </CardHeader>
+              <CardContent className="p-0 max-h-[700px] overflow-y-auto custom-scrollbar">
+                <div className="divide-y divide-white/5">
+                  {logs.sort((a,b) => b.timestamp.localeCompare(a.timestamp)).map(log => (
+                    <div key={log.id} className="p-6 hover:bg-white/5 transition-colors group">
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex items-center gap-3">
+                          <Badge variant="outline" className={`uppercase text-[9px] font-black border-none px-0 ${
+                            log.type === 'Substitution' ? 'text-emerald-400' : 
+                            log.type === 'Auth' ? 'text-indigo-400' : 'text-zinc-400'
+                          }`}>{log.type}</Badge>
+                          <span className="h-1 w-1 rounded-full bg-zinc-800" />
+                          <span className="text-zinc-600 text-[10px] font-bold uppercase tracking-tight">{new Date(log.timestamp).toLocaleDateString()}</span>
+                          <span className="text-zinc-600 text-[10px] font-bold uppercase tracking-tight">{new Date(log.timestamp).toLocaleTimeString()}</span>
+                        </div>
                       </div>
+                      <p className="text-sm text-zinc-300 font-medium leading-relaxed group-hover:text-white transition-colors">{log.message}</p>
                     </div>
-                    <p className="text-sm text-zinc-300 font-medium leading-relaxed group-hover:text-white transition-colors">{log.message}</p>
+                  ))}
+                  {logs.length === 0 && (
+                    <div className="py-32 text-center">
+                      <div className="h-16 w-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Activity className="h-8 w-8 text-zinc-700" />
+                      </div>
+                      <p className="text-zinc-500 font-black uppercase tracking-[0.2em] text-xs">No activity records found</p>
+                      <p className="text-zinc-700 text-[10px] mt-2 font-bold uppercase">Activity will appear here as users interact with the system</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="space-y-6">
+            <Card className="border-none shadow-xl bg-white rounded-[2rem] overflow-hidden">
+              <CardHeader className="bg-zinc-50 border-b border-zinc-100">
+                <CardTitle className="text-xs font-black uppercase tracking-widest text-zinc-500">Security Insights</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div>
+                  <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-4">Login Distribution</h4>
+                  <div className="space-y-4">
+                    {['Admin', 'HOD', 'Faculty', 'Student'].map(role => {
+                      const count = logs.filter(l => l.type === 'Auth' && l.message.toLowerCase().includes(role.toLowerCase())).length;
+                      const total = logs.filter(l => l.type === 'Auth').length || 1;
+                      const percentage = (count / total) * 100;
+                      
+                      return (
+                        <div key={role} className="space-y-1.5">
+                          <div className="flex justify-between text-[10px] font-bold uppercase">
+                            <span className="text-zinc-600">{role}</span>
+                            <span className="text-zinc-400">{count} Logins</span>
+                          </div>
+                          <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
+                            <motion.div 
+                              initial={{ width: 0 }} 
+                              animate={{ width: `${percentage}%` }}
+                              className={`h-full ${
+                                role === 'Admin' ? 'bg-indigo-500' :
+                                role === 'HOD' ? 'bg-emerald-500' :
+                                role === 'Faculty' ? 'bg-blue-500' : 'bg-amber-500'
+                              }`}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                ))}
-                {logs.length === 0 && (
-                  <div className="py-20 text-center">
-                    <Activity className="h-12 w-12 text-zinc-800 mx-auto mb-4" />
-                    <p className="text-zinc-500 font-bold uppercase tracking-widest text-xs">No logs found</p>
+                </div>
+
+                <div className="pt-4 border-t border-zinc-100">
+                  <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-100">
+                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">Last Admin Session</p>
+                    <p className="text-sm font-bold text-indigo-900">
+                      {logs.find(l => l.type === 'Auth' && l.message.includes('Admin')) 
+                        ? new Date(logs.find(l => l.type === 'Auth' && l.message.includes('Admin'))!.timestamp).toLocaleString() 
+                        : 'No session recorded'}
+                    </p>
                   </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       )}
 

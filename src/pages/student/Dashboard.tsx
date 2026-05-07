@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { db } from '@/lib/firebase';
+import { db } from '../../lib/firebase';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
-import { Substitution } from '@/types';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Substitution } from '../../types';
+import { Card, CardContent } from '../../components/ui/card';
+import { Badge } from '../../components/ui/badge';
+import { motion, AnimatePresence } from 'motion/react';
 
 const COURSES = [
   { code: '20AIPC601', name: 'Robotics Process Automation', abv: 'RPA', type: 'CORE', hrs: 5, staff: 'Dr. A. Rajasekar' },

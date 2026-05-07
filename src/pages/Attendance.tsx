@@ -6,10 +6,10 @@ import {
   TableHead, 
   TableHeader, 
   TableRow 
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+} from '../components/ui/table';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { 
   fetchAllFaculty, 
   attendanceCollection, 
@@ -20,9 +20,9 @@ import { Faculty, Attendance } from '../types';
 import { getDocs, query, where } from 'firebase/firestore';
 import { toast } from 'sonner';
 import { Search, UserCheck, UserX, Clock, Send } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { db } from '@/lib/firebase';
+import { Input } from '../components/ui/input';
+import { Textarea } from '../components/ui/textarea';
+import { db } from '../lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 
 export default function AttendancePage() {
@@ -30,7 +30,6 @@ export default function AttendancePage() {
   const [attendance, setAttendance] = useState<Record<string, Attendance['status']>>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const [loading, setLoading] = useState(true);
   const [showLeaveForm, setShowLeaveForm] = useState(false);
   const [leaveForm, setLeaveForm] = useState({
     startDate: '',
@@ -44,7 +43,6 @@ export default function AttendancePage() {
 
   const loadData = async (date: string) => {
     try {
-      setLoading(true);
       const f = await fetchAllFaculty();
       setFaculty(f);
       
@@ -59,8 +57,6 @@ export default function AttendancePage() {
     } catch (error) {
       console.error(error);
       toast.error('Failed to load attendance records');
-    } finally {
-      setLoading(false);
     }
   };
 

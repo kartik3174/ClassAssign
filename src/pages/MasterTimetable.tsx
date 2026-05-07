@@ -6,13 +6,13 @@ import {
   TableHead, 
   TableHeader, 
   TableRow 
-} from '@/components/ui/table';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from '../components/ui/table';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
+import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { fetchAllFaculty, fetchTimetables } from '../services/dataService';
 import { Faculty, TimetableEntry } from '../types';
 import { Clock, UserCheck, CalendarDays, Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { Input } from '../components/ui/input';
 import { motion } from 'motion/react';
 
 const SLOTS = [

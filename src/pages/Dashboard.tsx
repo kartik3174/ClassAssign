@@ -2,23 +2,21 @@ import { useState, useEffect } from 'react';
 import { 
   Users, 
   UserX, 
-  CheckCircle2, 
   AlertCircle,
   TrendingUp,
   Clock,
   Database
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { Progress } from '../components/ui/progress';
 import { 
-  getFaculty,
-  fetchTimetables, 
+  fetchAllFaculty,
   attendanceCollection,
   substitutionCollection 
 } from '../services/dataService';
-import { Faculty, TimetableEntry, Substitution, Attendance } from '../types';
+import { Faculty, Substitution } from '../types';
 import { getDocs, query, where } from 'firebase/firestore';
 import { toast } from 'sonner';
 
@@ -31,13 +29,12 @@ export default function Dashboard() {
   const [faculty, setFaculty] = useState<Faculty[]>([]);
   const [subs, setSubs] = useState<Substitution[]>([]);
   const [absentTodayCount, setAbsentTodayCount] = useState(0);
-  const [loading, setLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [aiInsight, setAiInsight] = useState<string>('Analyzing trends...');
 
   const loadData = async () => {
     try {
-      const f = await getFaculty() as Faculty[];
+      const f = await fetchAllFaculty() as Faculty[];
       setFaculty(f);
 
       const date = new Date().toISOString().split('T')[0];
@@ -55,8 +52,6 @@ export default function Dashboard() {
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 

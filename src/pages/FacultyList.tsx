@@ -6,10 +6,10 @@ import {
   TableHead, 
   TableHeader, 
   TableRow 
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+} from '../components/ui/table';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { 
   fetchAllFaculty, 
   timetableCollection,
@@ -17,7 +17,7 @@ import {
 } from '../services/dataService';
 import { Faculty, TimetableEntry } from '../types';
 import { Search, Plus, Mail, BookOpen, Clock, Trash2, Edit, Save } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { Input } from '../components/ui/input';
 import { getDocs, query, where, addDoc } from 'firebase/firestore';
 import { 
   Sheet, 
@@ -26,13 +26,12 @@ import {
   SheetTitle, 
   SheetDescription,
   SheetFooter
-} from '@/components/ui/sheet';
+} from '../components/ui/sheet';
 import { toast } from 'sonner';
 
 export default function FacultyList() {
   const [faculty, setFaculty] = useState<Faculty[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
   const [selectedFaculty, setSelectedFaculty] = useState<Faculty | null>(null);
   const [facultyTimetable, setFacultyTimetable] = useState<TimetableEntry[]>([]);
   
@@ -52,8 +51,6 @@ export default function FacultyList() {
       setFaculty(f);
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 

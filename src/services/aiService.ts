@@ -66,7 +66,7 @@ export async function getAISuggestions(faculty: Faculty[], recentSubs: Substitut
       ${faculty.map(f => `- ${f.name} (${f.department}): Workload ${f.workload}hrs, Acceptance Rate ${f.acceptanceRate * 100}%`).join('\n')}
       
       Recent Substitutions:
-      ${recentSubs.slice(0, 5).map(s => `- ${s.subject} substituted by ${s.substituteFacultyId || 'Unknown'} status ${s.status}`).join('\n')}
+      ${recentSubs.slice(0, 5).map(s => `- ${s.subject} substituted by ${s.assignedTeacherId || 'Unknown'} status ${s.status}`).join('\n')}
       
       Provide a brief 1-sentence professional insight about the substitution health of the department. 
       Identify if some faculty are overloaded or if the acceptance rate is high.
