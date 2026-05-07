@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { db } from '../../lib/firebase';
+import { db } from '@/lib/firebase';
 import { 
   collection, 
   query, 
@@ -11,18 +11,19 @@ import {
   doc, 
   updateDoc,
   QuerySnapshot,
-  DocumentData 
+  DocumentData,
+  QueryDocumentSnapshot 
 } from 'firebase/firestore';
-import { TimetableEntry, LeaveRequest, Substitution, Faculty } from '../../types';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { Badge } from '../../components/ui/badge';
-import { Input } from '../../components/ui/input';
-import { Textarea } from '../../components/ui/textarea';
+import { TimetableEntry, LeaveRequest, Substitution, Faculty } from '@/types';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Calendar, Clock, Send, UserCheck, Zap, Upload, FileJson, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import timetableData from '../../Data/timetable.json';
+import timetableData from '@/Data/timetable.json';
 
 interface FacultyDashboardProps {
   activeTab?: string;
@@ -82,20 +83,20 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
           setMyTimetable([]);
         }
       } else {
-        setMyTimetable(snapshot.docs.map((doc: DocumentData) => ({ id: doc.id, ...doc.data() } as TimetableEntry)));
+        setMyTimetable(snapshot.docs.map((d: QueryDocumentSnapshot<DocumentData>) => ({ id: d.id, ...d.data() } as TimetableEntry)));
       }
     });
 
     // 3. Fetch Leave Requests
     const lQuery = query(collection(db, 'leaveRequests'), where('facultyId', '==', facultyName));
     const unsubscribeLeave = onSnapshot(lQuery, (snapshot: QuerySnapshot<DocumentData>) => {
-      setMyRequests(snapshot.docs.map((doc: DocumentData) => ({ id: doc.id, ...doc.data() } as LeaveRequest)));
+      setMyRequests(snapshot.docs.map((d: QueryDocumentSnapshot<DocumentData>) => ({ id: d.id, ...d.data() } as LeaveRequest)));
     });
 
     // 4. Fetch Substitutions Assigned to Me
     const sQuery = query(collection(db, 'substitution'), where('assignedTeacherId', '==', facultyName));
     const unsubscribeSubs = onSnapshot(sQuery, (snapshot: QuerySnapshot<DocumentData>) => {
-      setSubstitutions(snapshot.docs.map((doc: DocumentData) => ({ id: doc.id, ...doc.data() } as Substitution)));
+      setSubstitutions(snapshot.docs.map((d: QueryDocumentSnapshot<DocumentData>) => ({ id: d.id, ...d.data() } as Substitution)));
     });
 
     return () => {
@@ -144,7 +145,7 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
     setIsSyncing(true);
     const reader = new FileReader();
     
-    reader.onload = async (e) => {
+    reader.onload = async (e: ProgressEvent<FileReader>) => {
       try {
         const content = e.target?.result as string;
         const data = JSON.parse(content);
@@ -157,7 +158,7 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
           // 1. Clear existing entries for this specific staff
           const q = query(timetableRef, where('facultyId', '==', staffName));
           const snapshot = await getDocs(q);
-          const deletePromises = snapshot.docs.map((d: DocumentData) => deleteDoc(d.ref));
+          const deletePromises = snapshot.docs.map((d: QueryDocumentSnapshot<DocumentData>) => deleteDoc(d.ref));
           await Promise.all(deletePromises);
 
           // 2. Add new entries
@@ -383,7 +384,7 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {substitutions.map(sub => (
+                  {substitutions.map((sub: Substitution) => (
                     <div key={sub.id} className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
                       <div className="flex justify-between items-start mb-4">
                         <Badge className="bg-indigo-500 text-white border-none text-[9px] font-black tracking-widest uppercase">{sub.status}</Badge>
@@ -428,7 +429,7 @@ export default function FacultyDashboard({ activeTab }: FacultyDashboardProps) {
               {myRequests.length === 0 ? (
                 <div className="py-10 text-center text-zinc-400 italic text-xs">No leave history found.</div>
               ) : (
-                myRequests.sort((a,b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 8).map(req => (
+                myRequests.sort((a,b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 8).map((req: LeaveRequest) => (
                   <div key={req.id} className="flex items-center justify-between p-4 rounded-2xl bg-zinc-50/50 border border-zinc-100 hover:border-indigo-200 transition-colors">
                     <div>
                       <p className="text-xs font-black text-zinc-900">{req.type}</p>
